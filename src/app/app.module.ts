@@ -9,6 +9,7 @@ import { BoardModule } from 'src/boards/board.module';
   imports: [
     MongooseModule.forRoot(
       'mongodb+srv://Accie:Welkom01@cluster0.rnsp1.gcp.mongodb.net/test?retryWrites=true&w=majority',
+      { useFindAndModify: false },
     ),
     UserModule,
     BoardModule,
