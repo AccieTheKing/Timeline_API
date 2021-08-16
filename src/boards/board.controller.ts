@@ -45,8 +45,8 @@ export class BoardController {
   @Patch()
   async updateBoard(
     @Body('id') id: Types.ObjectId,
-    @Body('data') data: Board,
+    @Body('title') title: string,
   ): Promise<Board> {
-    return this.boardService.update(id, data);
+    return this.boardService.update(id, title);
   }
 }
