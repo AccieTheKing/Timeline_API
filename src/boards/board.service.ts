@@ -20,8 +20,11 @@ export class BoardService {
     return this.boardModel.find(properties);
   }
 
-  async update(id: Types.ObjectId, title: string): Promise<Board> {
-    return this.boardModel.findByIdAndUpdate(id, { title });
+  async update(
+    id: Types.ObjectId,
+    properties?: Partial<Board>,
+  ): Promise<Board> {
+    return this.boardModel.findByIdAndUpdate(id, { ...properties });
   }
 
   async delete(id: Types.ObjectId): Promise<Board> {
