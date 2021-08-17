@@ -7,13 +7,16 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { Types } from 'mongoose';
+import { MilestoneService } from 'src/milestones/milestone.service';
 import { Board } from 'src/schemas/board.schema';
 import { BoardService } from './board.service';
 
 @Controller('boards')
 export class BoardController {
-  constructor(private boardService: BoardService) {}
+  constructor(
+    private boardService: BoardService,
+    private milestoneService: MilestoneService,
+  ) {}
 
   @Get()
   async getAllBoards(): Promise<Board[]> {
@@ -21,30 +24,31 @@ export class BoardController {
   }
 
   @Get(':id')
-  async getBoard(@Param('id') id: Types.ObjectId): Promise<Board> {
+  async getBoard(@Param('id') id: string): Promise<Board> {
     return this.boardService.find(id);
   }
 
   @Post()
   async createNewBoard(
     @Body('title') title: string,
-    @Body('userID') userID: Types.ObjectId,
+    @Body('userID') userID: string,
   ): Promise<Board> {
     return this.boardService.create({
       title,
       userID,
-      numberOfStories: 0,
+      numberOfMilestones: 0,
     });
   }
 
   @Delete(':id')
-  async deleteBoard(@Param('id') id: Types.ObjectId): Promise<Board> {
+  async deleteBoard(@Param('id') id: string): Promise<Board> {
+    await this.milestoneService.deleteAll(id);
     return this.boardService.delete(id);
   }
 
   @Patch()
   async updateBoard(
-    @Body('id') id: Types.ObjectId,
+    @Body('id') id: string,
     @Body('title') title: string,
   ): Promise<Board> {
     return this.boardService.update(id, { title });
