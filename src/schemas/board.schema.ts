@@ -3,16 +3,16 @@ import { Document, Types } from 'mongoose';
 
 export type BoardDocument = Board & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Board {
   @Prop({ required: true })
   title: string;
 
   @Prop({ required: true })
-  numberOfStories: number;
+  numberOfMilestones: number;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userID: Types.ObjectId;
+  userID: string;
 
   @Prop({ required: false })
   createdAt: string;
