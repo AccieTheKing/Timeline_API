@@ -47,6 +47,6 @@ export class BoardController {
     @Body('id') id: Types.ObjectId,
     @Body('title') title: string,
   ): Promise<Board> {
-    return this.boardService.update(id, title);
+    return this.boardService.update(id, { title });
   }
 }
