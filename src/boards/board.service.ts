@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Board, BoardDocument } from 'src/schemas/board.schema';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class BoardService {
     return createdBoard.save();
   }
 
-  async find(id: Types.ObjectId): Promise<Board> {
+  async find(id: string): Promise<Board> {
     return this.boardModel.findById(id);
   }
 
@@ -20,14 +20,11 @@ export class BoardService {
     return this.boardModel.find(properties);
   }
 
-  async update(
-    id: Types.ObjectId,
-    properties?: Partial<Board>,
-  ): Promise<Board> {
+  async update(id: string, properties?: Partial<Board>): Promise<Board> {
     return this.boardModel.findByIdAndUpdate(id, { ...properties });
   }
 
-  async delete(id: Types.ObjectId): Promise<Board> {
+  async delete(id: string): Promise<Board> {
     return this.boardModel.findByIdAndDelete(id);
   }
 }
