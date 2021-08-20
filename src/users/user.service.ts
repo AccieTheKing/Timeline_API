@@ -19,4 +19,8 @@ export class UserService {
   async findAllUser(properties?: Partial<User>): Promise<User[]> {
     return this.userModel.find(properties);
   }
+
+  async deleteUser(username: string): Promise<User> {
+    return this.userModel.findOneAndDelete({ username });
+  }
 }
