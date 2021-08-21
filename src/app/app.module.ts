@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from 'src/users/user.module';
 import { BoardModule } from 'src/boards/board.module';
 import { MilestoneModule } from 'src/milestones/milestone.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MilestoneModule } from 'src/milestones/milestone.module';
     UserModule,
     BoardModule,
     MilestoneModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [],
