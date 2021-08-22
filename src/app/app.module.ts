@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from 'src/users/user.module';
 import { BoardModule } from 'src/boards/board.module';
@@ -8,10 +9,10 @@ import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://Accie:Welkom01@cluster0.rnsp1.gcp.mongodb.net/test?retryWrites=true&w=majority',
-      { useFindAndModify: false },
-    ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(process.env.MONGODB, { useFindAndModify: false }),
     UserModule,
     BoardModule,
     MilestoneModule,
