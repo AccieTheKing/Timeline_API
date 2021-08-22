@@ -6,9 +6,9 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get(':username')
-  async getSingleUser(@Param('username') username: string): Promise<User> {
-    return this.userService.findUser(username);
+  @Get(':id')
+  async getSingleUser(@Param('id') id: string): Promise<User> {
+    return this.userService.findUser(id);
   }
 
   @Get()
