@@ -6,12 +6,11 @@ import { UserModule } from 'src/users/user.module';
 import { BoardModule } from 'src/boards/board.module';
 import { MilestoneModule } from 'src/milestones/milestone.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { configurations } from 'src/config/configurations';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB, { useFindAndModify: false }),
     UserModule,
     BoardModule,
