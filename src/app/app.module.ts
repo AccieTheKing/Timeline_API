@@ -17,6 +17,7 @@ import { AuthModule } from 'src/auth/auth.module';
     BoardModule,
     MilestoneModule,
     AuthModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [],
