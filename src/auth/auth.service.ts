@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { UserService } from 'src/users/user.service';
-import { compareHash } from '../helpers/hashing';
+import { compareHash, createHash } from '../helpers/hashing';
 
 @Injectable()
 export class AuthService {
@@ -11,8 +11,8 @@ export class AuthService {
     username: string,
     password: string,
   ): Promise<Partial<User>> {
-    const user = await this.userService.findUser(username);
-    const isMatch = await compareHash(password, user.password);
+    const user = await this.userService.findUser(username); // find user
+    const isMatch = await compareHash(password, user.password); // check password
 
     if (user && isMatch) {
       const {
@@ -30,13 +30,14 @@ export class AuthService {
   }
 
   async registerUser(userData: User): Promise<Partial<UserDocument>> {
-    const checkUser = this.userService.findUser(userData.username);
+    const userAlreadyExists = this.userService.findUser(userData.username);
 
-    if (checkUser) {
+    if (userAlreadyExists) {
       throw new ConflictException('User already exist');
     }
 
-    const { password, ...rest } = await this.userService.create(userData);
+    userData.password = await createHash(userData.password); // hash user password
+    const { password, ...rest } = await this.userService.create(userData); // remove user password from response
     return rest;
   }
 }
