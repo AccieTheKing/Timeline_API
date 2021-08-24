@@ -18,7 +18,7 @@ export class User {
   subscriptionType: string;
 
   @Prop({ required: true })
-  numberOfBoards: string;
+  numberOfBoards: number;
 
   @Prop({ required: false })
   refreshToken?: string;
