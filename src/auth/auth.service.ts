@@ -30,7 +30,9 @@ export class AuthService {
   }
 
   async registerUser(userData: User): Promise<Partial<UserDocument>> {
-    const userAlreadyExists = this.userService.findUser(userData.username);
+    const userAlreadyExists = await this.userService.findUser(
+      userData.username,
+    );
 
     if (userAlreadyExists) {
       throw new ConflictException('User already exist');
