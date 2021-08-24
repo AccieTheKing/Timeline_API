@@ -29,7 +29,7 @@ export class AuthService {
     return null;
   }
 
-  async registerUser(userData: User): Promise<Partial<UserDocument>> {
+  async registerUser(userData: User): Promise<User> {
     const userAlreadyExists = await this.userService.findUser(
       userData.username,
     );
@@ -39,7 +39,8 @@ export class AuthService {
     }
 
     userData.password = await createHash(userData.password); // hash user password
-    const { password, ...rest } = await this.userService.create(userData); // remove user password from response
-    return rest;
+    const { password, username, _id, subscriptionType, numberOfBoards } =
+      await this.userService.create(userData); // remove user password from response
+    return { id: _id, username, subscriptionType, numberOfBoards };
   }
 }
