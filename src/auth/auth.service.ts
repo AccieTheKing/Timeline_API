@@ -1,15 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { User } from 'src/schemas/user.schema';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { User, UserDocument } from 'src/schemas/user.schema';
 import { UserService } from 'src/users/user.service';
-import { JwtService } from '@nestjs/jwt';
 import { compareHash } from '../helpers/hashing';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private userService: UserService) {}
 
   async validateUser(
     username: string,
@@ -33,8 +29,14 @@ export class AuthService {
     return null;
   }
 
-  async login(user: Partial<User>): Promise<{ access_token: string }> {
-    const payload = { username: user.username };
-    return { access_token: this.jwtService.sign(payload) };
+  async registerUser(userData: User): Promise<Partial<UserDocument>> {
+    const checkUser = this.userService.findUser(userData.username);
+
+    if (checkUser) {
+      throw new ConflictException('User already exist');
+    }
+
+    const { password, ...rest } = await this.userService.create(userData);
+    return rest;
   }
 }
