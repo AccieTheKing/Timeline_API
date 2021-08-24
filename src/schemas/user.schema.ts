@@ -5,8 +5,8 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop({ type: Types.ObjectId, required: true })
-  id: string;
+  @Prop({ type: Types.ObjectId, required: false })
+  id?: string;
 
   @Prop({ required: true })
   username: string;
@@ -19,6 +19,9 @@ export class User {
 
   @Prop({ required: true })
   numberOfBoards: string;
+
+  @Prop({ required: false })
+  refreshToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
