@@ -12,7 +12,7 @@ export class User {
   username: string;
 
   @Prop({ required: true })
-  password: string;
+  password?: string;
 
   @Prop({ required: true })
   subscriptionType: string;
