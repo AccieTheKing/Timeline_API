@@ -13,7 +13,13 @@ export class UserService {
   }
 
   async findUser(username: string): Promise<UserDocument> {
-    return this.userModel.findOne({ username });
+    const user = await this.userModel.findOne({ username });
+
+    if (!user) {
+      throw new NotFoundException('User does not exists');
+    }
+
+    return user;
   }
 
   async findAllUser(properties?: Partial<User>): Promise<UserDocument[]> {
