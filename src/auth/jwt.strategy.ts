@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           return request?.cookies?.Authentication;
         },
       ]),
-      secretOrKey: `${configService.get<string>('JWT_REFRESH_TOKEN_SECRET')}`,
+      secretOrKey: `${configService.get<string>('JWT_ACCESS_TOKEN_SECRET')}`,
     });
   }
 
