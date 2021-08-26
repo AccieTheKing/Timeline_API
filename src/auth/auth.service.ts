@@ -34,8 +34,10 @@ export class AuthService {
     }
 
     userData.password = await createHash(userData.password); // hash user password
-    const { password, username, _id, subscriptionType, numberOfBoards } =
-      await this.userService.create(userData); // remove user password from response
-    return { id: _id, username, subscriptionType, numberOfBoards };
+    const createdUser = await this.userService.create(userData);
+    const { password, ...user } = createdUser.toJSON() as User; // remove user password from response
+
+    return user;
+  }
   }
 }
