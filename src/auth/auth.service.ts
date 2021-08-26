@@ -17,8 +17,7 @@ export class AuthService {
     const isMatch = await compareHash(password, foundUser.password); // check password
 
     if (foundUser && isMatch) {
-      const { password, ...rest } = foundUser as User;
-      console.log('testtttt', rest);
+      const { password, ...rest } = foundUser.toJSON() as User;
       return rest;
     }
 
