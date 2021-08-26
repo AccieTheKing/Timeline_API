@@ -37,7 +37,7 @@ export class UserService {
     username: string,
   ): Promise<void> {
     const currentRefreshToken = await createHash(refreshToken);
-    this.userModel.findOneAndUpdate(
+    await this.userModel.findOneAndUpdate(
       { username },
       {
         refreshToken: currentRefreshToken,
