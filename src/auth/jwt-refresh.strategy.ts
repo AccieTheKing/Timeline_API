@@ -33,13 +33,6 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
       payload.username,
     );
 
-    const { username, numberOfBoards, subscriptionType } = foundUser;
-
-    return {
-      id: foundUser._id,
-      username,
-      numberOfBoards,
-      subscriptionType,
-    } as User;
+    return foundUser.toJSON() as User;
   }
 }
