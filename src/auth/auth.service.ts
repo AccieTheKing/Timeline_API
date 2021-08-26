@@ -1,29 +1,25 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { User, UserDocument } from 'src/schemas/user.schema';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/schemas/user.schema';
 import { UserService } from 'src/users/user.service';
 import { compareHash, createHash } from '../helpers/hashing';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
+  ) {}
 
-  async validateUser(
-    username: string,
-    password: string,
-  ): Promise<Partial<User>> {
-    const user = await this.userService.findUser(username); // find user
-    const isMatch = await compareHash(password, user.password); // check password
+  async validateUser(username: string, password: string): Promise<User> {
+    const foundUser = await this.userService.findUser(username); // find user
+    const isMatch = await compareHash(password, foundUser.password); // check password
 
-    if (user && isMatch) {
-      const {
-        password,
-        username,
-        subscriptionType,
-        numberOfBoards,
-        _id,
-        ...rest
-      } = user;
-      return { username, subscriptionType, numberOfBoards, id: _id };
+    if (foundUser && isMatch) {
+      const { password, ...rest } = foundUser as User;
+      console.log('testtttt', rest);
+      return rest;
     }
 
     return null;
