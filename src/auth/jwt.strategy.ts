@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { User, UserDocument } from 'src/schemas/user.schema';
+import { User } from 'src/schemas/user.schema';
 import { UserService } from 'src/users/user.service';
 
 @Injectable()
