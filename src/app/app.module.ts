@@ -10,7 +10,10 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGODB, { useFindAndModify: false }),
+    MongooseModule.forRoot(process.env.MONGODB, {
+      useFindAndModify: false,
+      useCreateIndex: true,
+    }),
     UserModule,
     BoardModule,
     MilestoneModule,
