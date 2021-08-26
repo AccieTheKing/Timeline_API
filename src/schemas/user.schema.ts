@@ -8,7 +8,7 @@ export class User {
   @Prop({ type: Types.ObjectId, required: false })
   id?: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   username: string;
 
   @Prop({ required: true })
