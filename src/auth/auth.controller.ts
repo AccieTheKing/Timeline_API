@@ -59,7 +59,7 @@ export class AuthController {
 
     res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie.cookie]);
 
-    return res.send(req.user);
+    return res.send(user);
   }
 
   @UseGuards(JwtAuthenticationGuard)
