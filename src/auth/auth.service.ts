@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/schemas/user.schema';
@@ -18,11 +22,11 @@ export class AuthService {
     const isMatch = await compareHash(password, foundUser.password); // check password
 
     if (foundUser && isMatch) {
-      const { password, ...rest } = foundUser.toJSON() as User;
+      const { password, refreshToken, ...rest } = foundUser.toJSON() as User;
       return rest;
     }
 
-    return null;
+    throw new ForbiddenException('Username or Password incorrect!');
   }
 
   async registerUser(userData: User): Promise<User> {
