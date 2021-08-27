@@ -9,6 +9,7 @@ import { compareHash, createHash } from '../helpers/hashing';
 export class AuthService {
   constructor(
     private readonly userService: UserService,
+    private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -39,5 +40,52 @@ export class AuthService {
 
     return user;
   }
+
+  async getCookieWithJwtAccessToken(username: string): Promise<string> {
+    try {
+      const payload = { username };
+      const token: string = this.jwtService.sign(payload, {
+        secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+        expiresIn: `${this.configService.get<string>(
+          'JWT_ACCESS_TOKEN_SIGN_TIME',
+        )}s`,
+      });
+      return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+        'JWT_REFRESH_TOKEN_SIGN_TIME',
+      )}`;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getCookieWithJwtRefreshToken(
+    username: string,
+  ): Promise<{ cookie: string; token: string }> {
+    try {
+      const payload = { username };
+      const token: string = this.jwtService.sign(payload, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+        expiresIn: `${this.configService.get<string>(
+          'JWT_REFRESH_TOKEN_SIGN_TIME',
+        )}s`,
+      });
+      const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+        'JWT_REFRESH_TOKEN_SIGN_TIME',
+      )}`;
+
+      return {
+        cookie,
+        token,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getCookieForLogOut(): Promise<[string, string]> {
+    return [
+      'Authentication=; HttpOnly; Path=/; Max-Age=0',
+      'Refresh=; HttpOnly; Path=/; Max-Age=0',
+    ];
   }
 }
