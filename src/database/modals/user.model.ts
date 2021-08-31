@@ -1,11 +1,24 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { Schema, model, Document } from 'mongoose';
 
-const userSchema = new Schema({
-    username: { type: String, required: true },
-    subscriptionType: { type: String, required: true },
-    numberOfBoards: { type: Number, required: true },
+export enum APP_SUBSCRIPTION {
+	FREE = 'FREE',
+	PREMIUM = 'PREMIUM',
+}
+
+export interface IUser extends Document {
+	_id: string;
+	username: string;
+	password?: string;
+	subscriptionType: APP_SUBSCRIPTION;
+	access_token?: string;
+}
+
+const schema = new Schema<IUser>({
+	username: { type: String, required: true },
+	password: { type: String, required: false },
+	subscriptionType: { type: String, required: true },
+	numberOfBoards: { type: Number, required: true },
 });
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+const User = model<IUser>('User', schema);
+export { User };
