@@ -1,11 +1,11 @@
 import { Schema, model, Document } from 'mongoose';
 
 export interface IBoard extends Document {
-	_id: string;
+	_id?: string;
 	title: string;
 	numberOfMilestones: number;
 	userID: string;
-	createdAt: Date;
+	createdAt?: Date;
 }
 
 const schema = new Schema<IBoard>(
