@@ -5,18 +5,25 @@ export enum APP_SUBSCRIPTION {
 	PREMIUM = 'PREMIUM',
 }
 
+export enum USER_ROLES {
+	ADMIN = 'ADMIN',
+	USER = 'USER',
+}
+
 export interface IUser extends Document {
 	_id: string;
 	username: string;
 	password?: string;
 	subscriptionType: APP_SUBSCRIPTION;
+	role: USER_ROLES;
 	access_token?: string;
 }
 
 const schema = new Schema<IUser>({
-	username: { type: String, required: true },
+	username: { type: String, required: true, unique: true },
 	password: { type: String, required: false },
 	subscriptionType: { type: String, required: true },
+	role: { type: String, required: true },
 	numberOfBoards: { type: Number, required: true },
 });
 
