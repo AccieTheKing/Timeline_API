@@ -9,6 +9,7 @@ export function checkRoleMiddleWare(role: USER_ROLES) {
 			const foundUser = await User.findById(user._id);
 			if (foundUser.role === role) {
 				next();
+				return;
 			}
 		}
 

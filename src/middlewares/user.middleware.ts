@@ -16,6 +16,7 @@ export async function createUserMiddleware(
 				status: 400,
 				message: 'Please check the given values',
 			});
+			return;
 		}
 
 		// Check if user already exist
@@ -25,18 +26,19 @@ export async function createUserMiddleware(
 				status: 400,
 				message: 'Username already exist',
 			});
+			return;
+		} else {
+			const hashedPassword = await bcrypt.hash(password, 10);
+			const createdUser: IUser = new User({
+				username,
+				password: hashedPassword,
+				role: USER_ROLES.USER,
+				subscriptionType: APP_SUBSCRIPTION.FREE,
+				numberOfBoards: 0,
+			});
+			await createdUser.save();
+			next();
 		}
-
-		const hashedPassword = await bcrypt.hash(password, 10);
-		const createdUser: IUser = new User({
-			username,
-			password: hashedPassword,
-			role: USER_ROLES.USER,
-			subscriptionType: APP_SUBSCRIPTION.FREE,
-			numberOfBoards: 0,
-		});
-		await createdUser.save();
-		next();
 	} catch (err) {
 		res.status(400).json(`Error: ${err}`);
 	}
@@ -52,6 +54,8 @@ export async function updateUserMiddleware(
 		const updatedUser = User.findByIdAndUpdate(user._id, { ...user });
 		if (updatedUser) {
 			next();
+		} else {
+			res.status(404).json({ status: 404, message: `User not found` });
 		}
 	} catch (error) {
 		res.status(400).json(`Error: ${error}`);
@@ -65,11 +69,13 @@ export async function deleteUserMiddleware(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const user = req?.user as IUser;
-		const deletedUser = await User.findByIdAndDelete(user._id);
+		const userID: string = req?.body?.id;
+		const deletedUser = await User.findByIdAndDelete(userID);
 
 		if (deletedUser) {
 			next();
+		} else {
+			res.status(404).json({ status: 404, message: `User not found` });
 		}
 	} catch (error) {
 		res.status(400).json(`Error: ${error}`);

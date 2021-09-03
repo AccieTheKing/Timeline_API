@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const uri = process.env.ATLAS_URI;
 
 const connect = () => {
