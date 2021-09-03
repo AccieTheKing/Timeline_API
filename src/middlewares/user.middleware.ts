@@ -2,29 +2,11 @@ import { APP_SUBSCRIPTION, IUser, User, USER_ROLES } from '@models/user.model';
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 
-export function checkRoleMiddleWare(role: USER_ROLES) {
-	return async (req: Request, res: Response, next: NextFunction) => {
-		const user = req.user as IUser;
-
-		if (user) {
-			const foundUser = await User.findById(user._id);
-			if (foundUser.role === role) {
-				next();
-			}
-		}
-
-		res.status(403).send({
-			status: 403,
-			message: 'You do not have permission to access this endpoint',
-		});
-	};
-}
-
 export async function createUserMiddleware(
 	req: Request,
 	res: Response,
 	next: NextFunction
-) {
+): Promise<void> {
 	try {
 		const { username, password }: IUser = req?.body;
 
@@ -64,4 +46,51 @@ export async function updateUserMiddleware(
 	req: Request,
 	res: Response,
 	next: NextFunction
-);
+): Promise<void> {
+	try {
+		const user = req?.user as IUser;
+		const updatedUser = User.findByIdAndUpdate(user._id, { ...user });
+		if (updatedUser) {
+			next();
+		}
+	} catch (error) {
+		res.status(400).json(`Error: ${error}`);
+		console.error(error);
+	}
+}
+
+export async function deleteUserMiddleware(
+	req: Request,
+	res: Response,
+	next: NextFunction
+): Promise<void> {
+	try {
+		const user = req?.user as IUser;
+		const deletedUser = await User.findByIdAndDelete(user._id);
+
+		if (deletedUser) {
+			next();
+		}
+	} catch (error) {
+		res.status(400).json(`Error: ${error}`);
+		console.error(error);
+	}
+}
+
+export async function getUserMiddleware(
+	req: Request,
+	res: Response,
+	next: NextFunction
+): Promise<void> {
+	try {
+		const allFoundUsers: IUser[] = await User.find();
+
+		if (allFoundUsers) {
+			req.body.allUsers = allFoundUsers;
+			next();
+		}
+	} catch (error) {
+		res.status(400).json(`Error: ${error}`);
+		console.error(error);
+	}
+}
