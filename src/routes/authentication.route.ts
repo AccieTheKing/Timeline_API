@@ -1,7 +1,12 @@
-import { Request, Response, Router, NextFunction } from 'express';
-import { APP_SUBSCRIPTION, IUser, User, USER_ROLES } from '@models/user.model';
-import bcrypt from 'bcrypt';
 import { localStategyMiddleware } from '@helpers/passport.helper';
+import { checkRoleMiddleWare } from '@middlewares/auth.middleware';
+import {
+	createUserMiddleware,
+	deleteUserMiddleware,
+	getUserMiddleware,
+} from '@middlewares/user.middleware';
+import { USER_ROLES } from '@models/user.model';
+import { Request, Response, Router } from 'express';
 
 const authRouter = Router();
 
@@ -17,39 +22,68 @@ authRouter.post(
 	}
 );
 
-authRouter.get('/user', async (req: Request, res: Response) => {
-	res.json({ 'Successfully authenticated': req.isAuthenticated() });
+authRouter.get('/logout', async (req: Request, res: Response) => {
+	req.logOut();
+	res.send({
+		status: 200,
+		message: 'Successfully logged out',
+	});
 });
 
-authRouter.post('/register', async (req: Request, res: Response) => {
-	try {
-		const { username, password }: IUser = req?.body;
-
-		// Check empty fields
-		if (!(username.trim().length > 0) || !(password.trim().length > 0)) {
-			res.send('Please check the given values');
-		}
-
-		// Check if user already exist
-		const foundUser = await User.findOne({ username });
-		if (foundUser) {
-			res.send('Username already exist');
-		}
-
-		const hashedPassword = await bcrypt.hash(password, 10);
-		const createdUser: IUser = new User({
-			username,
-			password: hashedPassword,
-			role: USER_ROLES.USER,
-			subscriptionType: APP_SUBSCRIPTION.FREE,
-			numberOfBoards: 0,
+authRouter.post(
+	'/register',
+	createUserMiddleware,
+	async (req: Request, res: Response) => {
+		res.status(200).send({
+			status: 200,
+			message: 'successfully created user',
 		});
-		await createdUser.save();
-
-		res.send('User succesfuly created');
-	} catch (err) {
-		res.status(400).json(`Error: ${err}`);
 	}
-});
+);
+
+/**
+ * Admin routes about users
+ */
+authRouter.get(
+	'/user',
+	[checkRoleMiddleWare(USER_ROLES.ADMIN), getUserMiddleware],
+	async (req: Request, res: Response) => {
+		res.status(200).send({
+			status: 200,
+			message: 'successfully created user',
+			data: req.body.allUsers,
+		});
+	}
+);
+authRouter.post(
+	'/user',
+	[checkRoleMiddleWare(USER_ROLES.ADMIN), createUserMiddleware],
+	async (req: Request, res: Response) => {
+		res.status(200).send({
+			status: 200,
+			message: 'successfully created user',
+		});
+	}
+);
+authRouter.put(
+	'/user',
+	[checkRoleMiddleWare(USER_ROLES.ADMIN)],
+	async (req: Request, res: Response) => {
+		res.status(200).send({
+			status: 200,
+			message: 'successfully updated user',
+		});
+	}
+);
+authRouter.delete(
+	'/user',
+	[checkRoleMiddleWare(USER_ROLES.ADMIN), deleteUserMiddleware],
+	async (req: Request, res: Response) => {
+		res.status(200).send({
+			status: 200,
+			message: 'successfully deleted user',
+		});
+	}
+);
 
 export { authRouter };
