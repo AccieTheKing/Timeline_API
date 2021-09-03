@@ -26,6 +26,15 @@
         "@routes/*": [
             "src/routes/*"
           ],
+        "@services/*": [
+            "src/services/*"
+          ],
+        "@models/*": [
+            "src/models/*"
+          ],
+        "@helpers/*": [
+            "src/helpers/*"
+          ],
       },
     },
     "include": [
