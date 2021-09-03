@@ -10,13 +10,12 @@ export enum USER_ROLES {
 	USER = 'USER',
 }
 
-export interface IUser extends Document {
-	_id: string;
+export interface IUser extends Partial<Document> {
+	_id?: string;
 	username: string;
 	password?: string;
 	subscriptionType: APP_SUBSCRIPTION;
 	role: USER_ROLES;
-	access_token?: string;
 }
 
 const schema = new Schema<IUser>({
