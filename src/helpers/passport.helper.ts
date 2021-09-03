@@ -58,13 +58,18 @@ export const localStategyMiddleware = (
  * Global initializer for different passport strategies
  */
 export async function onInitPassport() {
-	passport.use(provideStategy('local')); // local strategy added
-	passport.serializeUser((user: IUser, done) => {
-		done(null, user._id);
-	});
-	passport.deserializeUser((id: string, done) => {
-		User.findById(id, (err: any, user: IUser) => {
-			done(err, user);
+	const onInitlocalStrategy = () => {
+		passport.use(provideStategy('local')); // local strategy added
+		passport.serializeUser((user: IUser, done) => {
+			done(null, user._id);
 		});
-	});
+		passport.deserializeUser((id: string, done) => {
+			User.findById(id, (err: any, user: IUser) => {
+				done(err, user);
+			});
+		});
+	};
+
+	// init strategies
+	onInitlocalStrategy();
 }
