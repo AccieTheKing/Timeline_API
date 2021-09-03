@@ -10,8 +10,8 @@ export enum USER_ROLES {
 	USER = 'USER',
 }
 
-export interface IUser extends Partial<Document> {
-	_id?: string;
+export interface IUser {
+	id?: string;
 	username: string;
 	password?: string;
 	subscriptionType: APP_SUBSCRIPTION;

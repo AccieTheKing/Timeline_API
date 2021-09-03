@@ -6,7 +6,7 @@ export function checkRoleMiddleWare(role: USER_ROLES) {
 		const user = req?.user as IUser;
 
 		if (user) {
-			const foundUser = await User.findById(user._id);
+			const foundUser = await User.findById(user.id);
 			if (foundUser.role === role) {
 				next();
 				return;

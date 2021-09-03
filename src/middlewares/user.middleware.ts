@@ -29,7 +29,7 @@ export async function createUserMiddleware(
 			return;
 		} else {
 			const hashedPassword = await bcrypt.hash(password, 10);
-			const createdUser: IUser = new User({
+			const createdUser = new User({
 				username,
 				password: hashedPassword,
 				role: USER_ROLES.USER,
@@ -51,7 +51,7 @@ export async function updateUserMiddleware(
 ): Promise<void> {
 	try {
 		const user = req?.user as IUser;
-		const updatedUser = User.findByIdAndUpdate(user._id, { ...user });
+		const updatedUser = User.findByIdAndUpdate(user.id, { ...user });
 		if (updatedUser) {
 			next();
 		} else {
