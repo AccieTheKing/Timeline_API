@@ -11,7 +11,7 @@ export enum USER_ROLES {
 }
 
 export interface IUser {
-	id?: string;
+	_id?: string;
 	username: string;
 	password?: string;
 	subscriptionType: APP_SUBSCRIPTION;
