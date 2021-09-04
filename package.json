@@ -4,8 +4,8 @@
   "description": "backend for the TimeLine app",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "tsc && node ./dist/index.js",
+    "build": "tsc -p .",
+    "start": "node ./dist/index.js",
     "start:dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register ./index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
