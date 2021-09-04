@@ -61,7 +61,7 @@ export async function onInitPassport() {
 	const onInitlocalStrategy = () => {
 		passport.use(provideStategy('local')); // local strategy added
 		passport.serializeUser((user: IUser, done) => {
-			done(null, user.id);
+			done(null, user._id);
 		});
 		passport.deserializeUser((id: string, done) => {
 			User.findById(id, (err: any, user: IUser) => {

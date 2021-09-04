@@ -51,7 +51,7 @@ export async function updateUserMiddleware(
 ): Promise<void> {
 	try {
 		const user = req?.user as IUser;
-		const updatedUser = User.findByIdAndUpdate(user.id, { ...user });
+		const updatedUser = User.findByIdAndUpdate(user._id, { ...user });
 		if (updatedUser) {
 			next();
 		} else {
