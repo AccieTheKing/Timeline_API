@@ -3,22 +3,46 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { connectToDB } from './src/database';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import passport from 'passport';
+import { connectToDB } from '@database';
+import { authRouter } from '@routes/authentication.route';
+import { boardRouter } from '@routes/boards.route';
+import { onInitPassport } from '@helpers/passport.helper';
 
 const port: number = parseInt(process.env.PORT) || 5000;
 const app = express();
 
+const corsOptions = {
+	credentials: true,
+	origin: ['http://localhost:3000', 'http://localhost:8080'],
+	// origin: ['*'],
+};
+
+connectToDB(); // Establish database connection
+
+// Middlewares
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(
+	session({
+		secret: process.env.EXPRESS_SESSION,
+		resave: false,
+		saveUninitialized: true,
+	})
+);
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
 
-// const boardsRouter = require('./src/routes/boards');
-// const usersRouter = require('./src/routes/users');
-// const storiesRouter = require('./src/routes/stories');
+onInitPassport(); // initialize all passport stategies
 
-// app.use('/boards', boardsRouter);
-// app.use('/stories', storiesRouter);
+// App routes
+app.use('/auth', authRouter);
+app.use('/boards', boardRouter);
 // app.use('/users', usersRouter);
-connectToDB(); // try to connect to the database
+// app.use('/stories', storiesRouter);
 
 app.listen(port, () => console.log(`App listens to port ${port}`));
