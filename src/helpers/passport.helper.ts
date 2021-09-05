@@ -5,6 +5,11 @@ import { User, IUser } from '@models/user.model';
 import { NextFunction, Response, Request } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
+enum STRATEGY_ENUMS {
+	LOCAL = 'local',
+	GOOGLE = 'google',
+}
+
 export const provideStategy = (strategyType: string) => {
 	switch (strategyType) {
 		case 'local':
