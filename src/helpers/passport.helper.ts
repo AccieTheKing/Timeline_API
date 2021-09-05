@@ -1,10 +1,13 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
+import passportGoogle from 'passport-google-oauth20';
 import bcrypt from 'bcrypt';
 import { User, IUser } from '@models/user.model';
 import { NextFunction, Response, Request } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
+const GoogleStrategy = passportGoogle.Strategy;
+
 enum STRATEGY_ENUMS {
 	LOCAL = 'local',
 	GOOGLE = 'google',
@@ -12,7 +15,7 @@ enum STRATEGY_ENUMS {
 
 export const provideStategy = (strategyType: string) => {
 	switch (strategyType) {
-		case 'local':
+		case STRATEGY_ENUMS.LOCAL:
 			return new LocalStrategy(
 				async (username: string, plainPassword: string, done) => {
 					try {
@@ -48,6 +51,18 @@ export const provideStategy = (strategyType: string) => {
 					}
 				}
 			);
+		case STRATEGY_ENUMS.GOOGLE:
+			return new GoogleStrategy(
+				{
+					clientID: process.env.GOOGLE_CLIENT_ID,
+					clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+					callbackURL: '/auth/google/callback',
+				},
+				function (accessToken, refreshToken, profile, cb) {
+					console.log(profile);
+					cb(null, profile);
+				}
+			);
 	}
 };
 
@@ -56,7 +71,7 @@ export const localStategyMiddleware = (
 	res: Response,
 	next: NextFunction
 ) => {
-	passport.authenticate('local')(req, res, next);
+	passport.authenticate(STRATEGY_ENUMS.LOCAL)(req, res, next);
 };
 
 /**
@@ -64,7 +79,7 @@ export const localStategyMiddleware = (
  */
 export async function onInitPassport() {
 	const onInitlocalStrategy = () => {
-		passport.use(provideStategy('local')); // local strategy added
+		passport.use(provideStategy(STRATEGY_ENUMS.LOCAL)); // local strategy added
 		passport.serializeUser((user: IUser, done) => {
 			done(null, user._id);
 		});
@@ -75,6 +90,11 @@ export async function onInitPassport() {
 		});
 	};
 
+	const onInitGoogleStrategy = () => {
+		passport.use(provideStategy(STRATEGY_ENUMS.GOOGLE));
+	};
+
 	// init strategies
 	onInitlocalStrategy();
+	onInitGoogleStrategy();
 }
