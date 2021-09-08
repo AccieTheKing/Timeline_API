@@ -1,5 +1,5 @@
-import { IBoard, Board } from '../database/modals/board.model';
-import { IServiceMethods } from './service.interface';
+import { IBoard, Board } from '@models/board.model';
+import { IServiceMethods } from '@services/interface';
 
 export class BoardService implements IServiceMethods<IBoard> {
 	constructor() {}

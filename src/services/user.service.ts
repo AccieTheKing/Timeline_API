@@ -1,5 +1,5 @@
-import { IUser, User } from '../database/modals/user.model';
-import { IServiceMethods } from './service.interface';
+import { IUser, User } from '@models/user.model';
+import { IServiceMethods } from '@services/interface';
 
 export class UserService implements IServiceMethods<IUser> {
 	constructor() {}
@@ -31,7 +31,8 @@ export class UserService implements IServiceMethods<IUser> {
 	async create(user: IUser): Promise<IUser> {
 		try {
 			const newUser = new User(user);
-			return await newUser.save();
+			const createdUser: IUser = await newUser.save();
+			return createdUser;
 		} catch (error) {
 			console.error(error);
 		}

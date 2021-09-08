@@ -1,5 +1,5 @@
-import { IMilestone, Milestone } from '../database/modals/milestone.model';
-import { IServiceMethods } from './service.interface';
+import { IMilestone, Milestone } from '@models/milestone.model';
+import { IServiceMethods } from '@services/interface';
 
 export class MilestoneService implements IServiceMethods<IMilestone> {
 	constructor() {}
