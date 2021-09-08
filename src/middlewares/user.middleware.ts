@@ -83,7 +83,7 @@ export async function deleteUserMiddleware(
 	}
 }
 
-export async function getUserMiddleware(
+export async function getAllUsersMiddleware(
 	req: Request,
 	res: Response,
 	next: NextFunction
