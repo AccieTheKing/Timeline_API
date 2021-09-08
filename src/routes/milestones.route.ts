@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { Board } from '../database/modals/board.model';
-import { Milestone } from '../database/modals/milestone.model';
+import { Board } from '@models/board.model';
+import { Milestone } from '@models/milestone.model';
 
 const milestoneRouter = Router();
 milestoneRouter.get('/', async (req, res) => {

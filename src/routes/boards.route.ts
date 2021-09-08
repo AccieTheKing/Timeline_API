@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { BoardService } from '../services/board.service';
-import { Board } from '../database/modals/board.model';
-import { Milestone } from '../database/modals/milestone.model';
-import { MilestoneService } from '../services/milestone.service';
+import { BoardService } from '@services/board.service';
+import { Board } from '@models/board.model';
+import { Milestone } from '@models/milestone.model';
+import { MilestoneService } from '@services/milestone.service';
 
 const boardRouter = Router();
 const boardService: BoardService = new BoardService();
@@ -13,7 +13,7 @@ boardRouter.get('/', async (req, res) => {
 		const board = await boardService.findAll();
 		res.status(200).json(board);
 	} catch (error) {
-		res.status(400).json(`Error: ${error}`);
+		res.status(500).json(`Error: ${error}`);
 	}
 });
 
@@ -22,7 +22,7 @@ boardRouter.get('/:id', async (req, res) => {
 		const board = await boardService.find(req.params.id);
 		res.status(200).json(board);
 	} catch (error) {
-		res.status(400).json(`Error: ${error}`);
+		res.status(500).json(`Error: ${error}`);
 	}
 });
 
@@ -36,7 +36,7 @@ boardRouter.delete('/:id', async (req, res) => {
 		const allBoards = await boardService.findAll();
 		res.status(200).json(allBoards);
 	} catch (error) {
-		res.status(400).json(`Error: ${error}`);
+		res.status(500).json(`Error: ${error}`);
 	}
 });
 
@@ -54,7 +54,7 @@ boardRouter.post('/new', async (req, res) => {
 		const allUserBoards = await Board.find({ userID });
 		res.status(200).json(allUserBoards);
 	} catch (error) {
-		res.status(400).json(`Error: ${error}`);
+		res.status(500).json(`Error: ${error}`);
 	}
 });
 
