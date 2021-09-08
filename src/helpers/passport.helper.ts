@@ -74,6 +74,14 @@ export const localStategyMiddleware = (
 	passport.authenticate(STRATEGY_ENUMS.LOCAL)(req, res, next);
 };
 
+export const googleStrategyMiddleware = (
+	param: { scope: [string] } | { failureRedirect: string; session: boolean }
+) => {
+	return (req: Request, res: Response, next: NextFunction) => {
+		passport.authenticate(STRATEGY_ENUMS.GOOGLE, param)(req, res, next);
+	};
+};
+
 /**
  * Global initializer for different passport strategies
  */
