@@ -59,7 +59,7 @@ export const provideStategy = (strategyType: string) => {
 					callbackURL: '/auth/google/callback',
 				},
 				function (accessToken, refreshToken, profile, cb) {
-					console.log(profile);
+					console.log(profile._json);
 					cb(null, profile);
 				}
 			);

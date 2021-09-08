@@ -1,4 +1,7 @@
-import { localStategyMiddleware } from '@helpers/passport.helper';
+import {
+	googleStrategyMiddleware,
+	localStategyMiddleware,
+} from '@helpers/passport.helper';
 import { checkRoleMiddleWare } from '@middlewares/auth.middleware';
 import {
 	createUserMiddleware,
@@ -42,6 +45,22 @@ authRouter.post(
 );
 
 /**
+ * Google Authentication
+ */
+authRouter.get(
+	'/google',
+	googleStrategyMiddleware({ scope: ['profile'] }) // passport.authenticate(googleStrat, param)
+);
+
+authRouter.get(
+	'/google/callback',
+	googleStrategyMiddleware({ failureRedirect: '/login', session: false }), // passport.authenticate(googleStrat, param)
+	async (req: Request, res: Response) => {
+		res.redirect('http://localhost:3000/overview');
+	}
+);
+
+/*
  * Admin routes about users
  */
 authRouter.get(
