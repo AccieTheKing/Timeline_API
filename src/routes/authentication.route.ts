@@ -3,7 +3,7 @@ import { checkRoleMiddleWare } from '@middlewares/auth.middleware';
 import {
 	createUserMiddleware,
 	deleteUserMiddleware,
-	getUserMiddleware,
+	getAllUsersMiddleware,
 } from '@middlewares/user.middleware';
 import { USER_ROLES } from '@models/user.model';
 import { Request, Response, Router } from 'express';
@@ -46,7 +46,7 @@ authRouter.post(
  */
 authRouter.get(
 	'/user',
-	[checkRoleMiddleWare(USER_ROLES.ADMIN), getUserMiddleware],
+	[checkRoleMiddleWare(USER_ROLES.ADMIN), getAllUsersMiddleware],
 	async (req: Request, res: Response) => {
 		res.status(200).send({
 			status: 200,
