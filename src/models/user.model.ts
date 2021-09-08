@@ -10,12 +10,22 @@ export enum USER_ROLES {
 	USER = 'USER',
 }
 
+interface ISocialsData {
+	id: string;
+	email: string;
+	name: string;
+	token: string;
+}
+
 export interface IUser {
 	_id?: string;
 	username: string;
 	password?: string;
 	subscriptionType: APP_SUBSCRIPTION;
 	role: USER_ROLES;
+	google?: ISocialsData;
+	facebook?: ISocialsData;
+	twitter?: ISocialsData;
 }
 
 const schema = new Schema<IUser>({
