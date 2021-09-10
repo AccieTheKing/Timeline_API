@@ -29,11 +29,75 @@ export interface IUser {
 }
 
 const schema = new Schema<IUser>({
-	username: { type: String, required: true, unique: true },
-	password: { type: String, required: false },
 	subscriptionType: { type: String, required: true },
 	role: { type: String, required: true },
 	numberOfBoards: { type: Number, required: true },
+	local: {
+		type: Object,
+		required: false,
+		username: { type: String, unique: true },
+		password: { type: String },
+	},
+	google: {
+		type: Object,
+		require: false,
+		id: {
+			type: String,
+			required: true,
+		},
+		email: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
+		token: {
+			type: String,
+			required: true,
+		},
+	},
+	facebook: {
+		type: Object,
+		require: false,
+		id: {
+			type: String,
+			required: true,
+		},
+		email: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
+		token: {
+			type: String,
+			required: true,
+		},
+	},
+	twitter: {
+		type: Object,
+		require: false,
+		id: {
+			type: String,
+			required: true,
+		},
+		email: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
+		token: {
+			type: String,
+			required: true,
+		},
+	},
 });
 
 const User = model<IUser>('User', schema);
