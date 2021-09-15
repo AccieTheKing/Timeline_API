@@ -8,7 +8,8 @@ export async function createUserMiddleware(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { username, password }: IUser = req?.body;
+		const { local }: IUser = req?.body;
+		const { username, password } = local;
 
 		// Check empty fields
 		if (!(username.trim().length > 0) || !(password.trim().length > 0)) {

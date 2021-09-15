@@ -18,9 +18,11 @@ interface ISocialsData {
 }
 
 export interface IUser {
-	_id?: string;
-	username: string;
-	password?: string;
+	_id: string;
+	local: {
+		username?: string;
+		password?: string;
+	};
 	subscriptionType: APP_SUBSCRIPTION;
 	role: USER_ROLES;
 	google?: ISocialsData;

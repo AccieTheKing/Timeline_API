@@ -21,7 +21,7 @@ export const provideStategy = (strategyType: string) => {
 					try {
 						const foundUser = (
 							await User.findOne({
-								username,
+								'local.username': username,
 							})
 						)?.toJSON() as IUser;
 
@@ -31,9 +31,10 @@ export const provideStategy = (strategyType: string) => {
 							});
 						}
 
+						const storedHashedPassword = foundUser.local.password;
 						const passwordCheck: boolean = await bcrypt.compare(
 							plainPassword,
-							foundUser.password
+							storedHashedPassword
 						);
 
 						if (!passwordCheck) {
@@ -42,7 +43,14 @@ export const provideStategy = (strategyType: string) => {
 							});
 						}
 
-						const { password, ...user } = foundUser;
+						const { local, ...rest } = foundUser;
+						const user = {
+							...rest,
+							local: {
+								username: local.username,
+							},
+						};
+						console.log(user);
 
 						return done(null, user);
 					} catch (error) {
