@@ -66,9 +66,13 @@ export const provideStategy = (strategyType: string) => {
 					clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 					callbackURL: '/auth/google/callback',
 				},
-				function (accessToken, refreshToken, profile, cb) {
-					console.log(profile._json);
+				async function (accessToken, refreshToken, profile, cb) {
+					try {
 					cb(null, profile);
+					} catch (error) {
+						cb(error, null);
+						console.error(error);
+					}
 				}
 			);
 	}
