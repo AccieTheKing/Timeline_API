@@ -24,6 +24,7 @@ export interface IUser {
 		password?: string;
 	};
 	subscriptionType: APP_SUBSCRIPTION;
+	numberOfBoards: number;
 	role: USER_ROLES;
 	google?: ISocialsData;
 	facebook?: ISocialsData;
