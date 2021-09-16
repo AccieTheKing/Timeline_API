@@ -10,96 +10,40 @@ export enum USER_ROLES {
 	USER = 'USER',
 }
 
-interface ISocialsData {
-	id: string;
-	email: string;
-	name: string;
-	token: string;
-}
-
 export interface IUser {
 	_id: string;
+	subscriptionType: APP_SUBSCRIPTION;
+	numberOfBoards: number;
+	role: USER_ROLES;
+	displayName: string;
 	local: {
 		username?: string;
 		password?: string;
 	};
-	subscriptionType: APP_SUBSCRIPTION;
-	numberOfBoards: number;
-	role: USER_ROLES;
-	google?: ISocialsData;
-	facebook?: ISocialsData;
-	twitter?: ISocialsData;
+	connectedSocails: {
+		googleId: string;
+		facebookId: string;
+		twitterId: string;
+	};
 }
 
 const schema = new Schema<IUser>({
 	subscriptionType: { type: String, required: true },
 	role: { type: String, required: true },
 	numberOfBoards: { type: Number, required: true },
+	displayName: { type: String },
 	local: {
 		type: Object,
 		required: false,
 		username: { type: String },
 		password: { type: String },
 	},
-	google: {
+	connectedSocials: {
 		type: Object,
-		require: false,
-		id: {
-			type: String,
-			required: true,
-		},
-		email: {
-			type: String,
-			required: true,
-		},
-		name: {
-			type: String,
-			required: true,
-		},
-		token: {
-			type: String,
-			required: true,
-		},
-	},
-	facebook: {
-		type: Object,
-		require: false,
-		id: {
-			type: String,
-			required: true,
-		},
-		email: {
-			type: String,
-			required: true,
-		},
-		name: {
-			type: String,
-			required: true,
-		},
-		token: {
-			type: String,
-			required: true,
-		},
-	},
-	twitter: {
-		type: Object,
-		require: false,
-		id: {
-			type: String,
-			required: true,
-		},
-		email: {
-			type: String,
-			required: true,
-		},
-		name: {
-			type: String,
-			required: true,
-		},
-		token: {
-			type: String,
-			required: true,
-		},
+		required: false,
+		googleId: { type: String },
+		facebookId: { type: String },
+		twitterId: { type: String },
 	},
 });
 
