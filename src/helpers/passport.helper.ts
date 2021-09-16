@@ -8,6 +8,7 @@ import { NextFunction, Response, Request } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
+const TwitterStrategy = passportTwitter.Strategy;
 
 enum STRATEGY_ENUMS {
 	LOCAL = 'local',
@@ -82,6 +83,20 @@ export const provideStategy = (strategyType: string) => {
 								subscriptionType: APP_SUBSCRIPTION.FREE,
 								numberOfBoards: 0,
 								role: USER_ROLES.USER,
+								displayName: profile.displayName,
+								connectedSocials: {
+									google: profile.id,
+								},
+							});
+							await createdUser.save();
+							cb(null, createdUser);
+						}
+					} catch (error) {
+						cb(error, null);
+						console.error(error);
+					}
+				}
+			);
 		case STRATEGY_ENUMS.TWITTER:
 			return new TwitterStrategy(
 				{
@@ -117,21 +132,6 @@ export const provideStategy = (strategyType: string) => {
 					}
 				}
 			);
-								displayName: profile.name.givenName,
-								connectedSocials: {
-									google: profile.id,
-								},
-							});
-							await createdUser.save();
-							cb(null, createdUser);
-						}
-					} catch (error) {
-						cb(error, null);
-						console.error(error);
-					}
-				}
-			);
-	}
 };
 
 export const localStategyMiddleware = (
