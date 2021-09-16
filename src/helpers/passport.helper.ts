@@ -68,7 +68,13 @@ export const provideStategy = (strategyType: string) => {
 				},
 				async function (accessToken, refreshToken, profile, cb) {
 					try {
-					cb(null, profile);
+						const foundUser = await User.findOne({
+							'connectedSocials.google': profile.id,
+						});
+						if (foundUser) {
+							cb(null, foundUser); // return already stored user
+						} else {
+						}
 					} catch (error) {
 						cb(error, null);
 						console.error(error);
