@@ -132,6 +132,7 @@ export const provideStategy = (strategyType: string) => {
 					}
 				}
 			);
+	}
 };
 
 export const localStategyMiddleware = (
