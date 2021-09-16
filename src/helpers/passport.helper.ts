@@ -2,7 +2,7 @@ import passport from 'passport';
 import passportLocal from 'passport-local';
 import passportGoogle from 'passport-google-oauth20';
 import bcrypt from 'bcrypt';
-import { User, IUser } from '@models/user.model';
+import { User, IUser, USER_ROLES, APP_SUBSCRIPTION } from '@models/user.model';
 import { NextFunction, Response, Request } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
@@ -71,9 +71,22 @@ export const provideStategy = (strategyType: string) => {
 						const foundUser = await User.findOne({
 							'connectedSocials.google': profile.id,
 						});
+
 						if (foundUser) {
 							cb(null, foundUser); // return already stored user
 						} else {
+							// Save user data for later use.
+							const createdUser = new User({
+								subscriptionType: APP_SUBSCRIPTION.FREE,
+								numberOfBoards: 0,
+								role: USER_ROLES.USER,
+								displayName: profile.name.givenName,
+								connectedSocials: {
+									google: profile.id,
+								},
+							});
+							await createdUser.save();
+							cb(null, createdUser);
 						}
 					} catch (error) {
 						cb(error, null);
@@ -93,7 +106,7 @@ export const localStategyMiddleware = (
 };
 
 export const googleStrategyMiddleware = (
-	param: { scope: [string] } | { failureRedirect: string; session: boolean }
+	param: { scope: string[] } | { failureRedirect: string; session: boolean }
 ) => {
 	return (req: Request, res: Response, next: NextFunction) => {
 		passport.authenticate(STRATEGY_ENUMS.GOOGLE, param)(req, res, next);
