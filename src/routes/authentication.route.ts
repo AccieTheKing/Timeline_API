@@ -1,6 +1,7 @@
 import {
 	googleStrategyMiddleware,
 	localStategyMiddleware,
+	twitterStrategyMiddleware,
 } from '@helpers/passport.helper';
 import { checkRoleMiddleWare } from '@middlewares/auth.middleware';
 import {
@@ -55,6 +56,22 @@ authRouter.get(
 authRouter.get(
 	'/google/callback',
 	googleStrategyMiddleware({ failureRedirect: '/login', session: false }), // passport.authenticate(googleStrat, param)
+	async (req: Request, res: Response) => {
+		res.redirect('http://localhost:3000/overview');
+	}
+);
+
+/**
+ * Twitter Authentication
+ */
+authRouter.get(
+	'/twitter',
+	twitterStrategyMiddleware() // passport.authenticate(twitter, param)
+);
+
+authRouter.get(
+	'/twitter/callback',
+	twitterStrategyMiddleware({ failureRedirect: '/login' }), // passport.authenticate(twitter, param)
 	async (req: Request, res: Response) => {
 		res.redirect('http://localhost:3000/overview');
 	}

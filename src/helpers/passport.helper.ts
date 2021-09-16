@@ -1,6 +1,7 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import passportGoogle from 'passport-google-oauth20';
+import passportTwitter from 'passport-twitter';
 import bcrypt from 'bcrypt';
 import { User, IUser, USER_ROLES, APP_SUBSCRIPTION } from '@models/user.model';
 import { NextFunction, Response, Request } from 'express';
@@ -11,6 +12,7 @@ const GoogleStrategy = passportGoogle.Strategy;
 enum STRATEGY_ENUMS {
 	LOCAL = 'local',
 	GOOGLE = 'google',
+	TWITTER = 'twitter',
 }
 
 export const provideStategy = (strategyType: string) => {
@@ -80,6 +82,41 @@ export const provideStategy = (strategyType: string) => {
 								subscriptionType: APP_SUBSCRIPTION.FREE,
 								numberOfBoards: 0,
 								role: USER_ROLES.USER,
+		case STRATEGY_ENUMS.TWITTER:
+			return new TwitterStrategy(
+				{
+					consumerKey: process.env.TWITTER_CLIENT_ID,
+					consumerSecret: process.env.TWITTER_CLIENT_SECRET,
+					callbackURL: '/auth/twitter/callback',
+				},
+				async function (accessToken, refreshToken, profile, cb) {
+					try {
+						const foundUser = await User.findOne({
+							'connectedSocials.twitter': profile.id,
+						});
+
+						if (foundUser) {
+							cb(null, foundUser); // return already stored user
+						} else {
+							// Save user data for later use.
+							const createdUser = new User({
+								subscriptionType: APP_SUBSCRIPTION.FREE,
+								numberOfBoards: 0,
+								role: USER_ROLES.USER,
+								displayName: profile.displayName,
+								connectedSocials: {
+									twitter: profile.id,
+								},
+							});
+							await createdUser.save();
+							cb(null, createdUser);
+						}
+					} catch (error) {
+						cb(error, null);
+						console.error(error);
+					}
+				}
+			);
 								displayName: profile.name.givenName,
 								connectedSocials: {
 									google: profile.id,
@@ -113,6 +150,14 @@ export const googleStrategyMiddleware = (
 	};
 };
 
+export const twitterStrategyMiddleware = (param?: {
+	failureRedirect?: string;
+}) => {
+	return (req: Request, res: Response, next: NextFunction) => {
+		passport.authenticate(STRATEGY_ENUMS.TWITTER, param)(req, res, next);
+	};
+};
+
 /**
  * Global initializer for different passport strategies
  */
@@ -133,7 +178,12 @@ export async function onInitPassport() {
 		passport.use(provideStategy(STRATEGY_ENUMS.GOOGLE));
 	};
 
+	const onInitTwitterStrategy = () => {
+		passport.use(provideStategy(STRATEGY_ENUMS.TWITTER));
+	};
+
 	// init strategies
 	onInitlocalStrategy();
 	onInitGoogleStrategy();
+	onInitTwitterStrategy();
 }
