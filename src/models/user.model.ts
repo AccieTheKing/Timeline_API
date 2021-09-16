@@ -38,7 +38,7 @@ const schema = new Schema<IUser>({
 	local: {
 		type: Object,
 		required: false,
-		username: { type: String, unique: true },
+		username: { type: String },
 		password: { type: String },
 	},
 	google: {
