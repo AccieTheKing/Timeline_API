@@ -49,11 +49,7 @@ export const provideStategy = (strategyType: string) => {
 						const { local, ...rest } = foundUser;
 						const user = {
 							...rest,
-							local: {
-								username: local.username,
-							},
 						};
-						console.log(user);
 
 						return done(null, user);
 					} catch (error) {
