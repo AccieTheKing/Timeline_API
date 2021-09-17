@@ -1,6 +1,9 @@
 import { APP_SUBSCRIPTION, IUser, User, USER_ROLES } from '@models/user.model';
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
+import { UserService } from '@services/user.service';
+
+const userService = new UserService(); // service for user data
 
 export async function createUserMiddleware(
 	req: Request,
@@ -20,7 +23,9 @@ export async function createUserMiddleware(
 		}
 
 		// Check if user already exist
-		const foundUser = await User.findOne({ 'local.username': username });
+		const foundUser = await userService.findOne({
+			'local.username': username,
+		});
 		if (foundUser) {
 			res.status(400).send({
 				status: 400,
@@ -54,7 +59,9 @@ export async function updateUserMiddleware(
 ): Promise<void> {
 	try {
 		const user = req?.user as IUser;
-		const updatedUser = User.findByIdAndUpdate(user._id, { ...user });
+		const updatedUser = userService.findByIdAndUpdate(user._id, {
+			...user,
+		});
 		if (updatedUser) {
 			next();
 		} else {
@@ -73,7 +80,7 @@ export async function deleteUserMiddleware(
 ): Promise<void> {
 	try {
 		const userID: string = req?.body?.id;
-		const deletedUser = await User.findByIdAndDelete(userID);
+		const deletedUser = await userService.findByIdAndDelete(userID);
 
 		if (deletedUser) {
 			next();
@@ -92,7 +99,7 @@ export async function getAllUsersMiddleware(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const allFoundUsers: IUser[] = await User.find();
+		const allFoundUsers: IUser[] = await userService.findAll();
 
 		if (allFoundUsers) {
 			req.body.allUsers = allFoundUsers;
