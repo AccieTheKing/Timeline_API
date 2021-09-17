@@ -1,7 +1,8 @@
 export interface IServiceMethods<T> {
 	findAll(): Promise<T[]>;
-	find(id: string): Promise<T>;
-	findAndDelete(id: string): Promise<void>;
-	update(element: T): Promise<T>;
+	findById(id: string): Promise<T>;
+	findOne(id: string): Promise<T>;
+	findByIdAndDelete(id: string): Promise<T>;
+	findByIdAndUpdate(id: string, param: any): Promise<T>;
 	create(element: T): Promise<T>;
 }
