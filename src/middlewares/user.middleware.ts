@@ -8,8 +8,7 @@ export async function createUserMiddleware(
 	next: NextFunction
 ): Promise<void> {
 	try {
-		const { local }: IUser = req?.body;
-		const { username, password } = local;
+		const { username, password } = req?.body;
 
 		// Check empty fields
 		if (!(username.trim().length > 0) || !(password.trim().length > 0)) {
@@ -21,7 +20,7 @@ export async function createUserMiddleware(
 		}
 
 		// Check if user already exist
-		const foundUser = await User.findOne({ username });
+		const foundUser = await User.findOne({ 'local.username': username });
 		if (foundUser) {
 			res.status(400).send({
 				status: 400,
@@ -31,8 +30,11 @@ export async function createUserMiddleware(
 		} else {
 			const hashedPassword = await bcrypt.hash(password, 10);
 			const createdUser = new User({
-				username,
-				password: hashedPassword,
+				local: {
+					username,
+					password: hashedPassword,
+				},
+				displayName: username,
 				role: USER_ROLES.USER,
 				subscriptionType: APP_SUBSCRIPTION.FREE,
 				numberOfBoards: 0,
