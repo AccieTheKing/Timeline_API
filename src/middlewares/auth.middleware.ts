@@ -19,3 +19,20 @@ export function checkRoleMiddleWare(role: USER_ROLES) {
 		});
 	};
 }
+
+export function checkIfAuthenticated(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const user = req?.user as IUser;
+
+	if (user) {
+		next();
+		return;
+	}
+	res.status(403).send({
+		status: 403,
+		message: 'You are not authenticated!',
+	});
+}
