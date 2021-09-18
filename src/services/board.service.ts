@@ -2,48 +2,67 @@ import { IBoard, Board } from '@models/board.model';
 import { IServiceMethods } from '@services/interface';
 
 export class BoardService implements IServiceMethods<IBoard> {
-	constructor() {}
+	private service;
 
-	async findAndDelete(id: string): Promise<void> {
+	constructor() {
+		this.service = Board;
+	}
+
+	async find(param: any): Promise<IBoard[]> {
 		try {
-			await Board.findByIdAndDelete(id);
+			return this.service.find(param);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	}
 
 	async findAll(): Promise<IBoard[]> {
 		try {
-			return await Board.find();
+			return this.service.find();
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	}
 
-	async find(id: string): Promise<IBoard> {
+	async create(element: IBoard): Promise<IBoard> {
 		try {
-			return await Board.findById(id);
+			const newBoard = new Board(element);
+			const createdBoard: IBoard = await newBoard.save();
+			return createdBoard;
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	}
 
-	async update(board: IBoard): Promise<IBoard> {
+	async findById(id: string): Promise<IBoard> {
 		try {
-			return await Board.findByIdAndUpdate(board._id, {
-				...board,
-			});
+			return this.service.findById(id);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	}
 
-	async create(board: IBoard): Promise<IBoard> {
+	async findOne(param: any): Promise<IBoard> {
 		try {
-			const newBoard = new Board(board);
-			return await newBoard.save();
+			return this.service.findOne(param);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
+		}
+	}
+
+	async findByIdAndDelete(id: string): Promise<IBoard> {
+		try {
+			return this.service.findByIdAndDelete(id);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	async findByIdAndUpdate(id: string, param: any): Promise<IBoard> {
+		try {
+			return this.service.findByIdAndUpdate(id, param);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 }
