@@ -1,21 +1,30 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { BoardService } from '@services/board.service';
 import { Board } from '@models/board.model';
 import { Milestone } from '@models/milestone.model';
 import { MilestoneService } from '@services/milestone.service';
+import { fetchBoardMiddleware } from '@middlewares/board.middleware';
+import { checkIfAuthenticated } from '@middlewares/auth.middleware';
 
 const boardRouter = Router();
 const boardService: BoardService = new BoardService();
 // const milestoneService: MilestoneService = new MilestoneService();
 
-boardRouter.get('/', async (req, res) => {
-	try {
-		const board = await boardService.findAll();
-		res.status(200).json(board);
-	} catch (error) {
-		res.status(500).json(`Error: ${error}`);
+boardRouter.get(
+	'/',
+	[checkIfAuthenticated, fetchBoardMiddleware],
+	async (req: Request, res: Response) => {
+		try {
+			res.status(200).send({
+				status: 200,
+				message: 'Successful fetched boards data',
+				data: req.body.data,
+			});
+		} catch (error) {
+			res.status(500).json(`Error: ${error}`);
+		}
 	}
-});
+);
 
 boardRouter.get('/:id', async (req, res) => {
 	try {
