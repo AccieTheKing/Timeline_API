@@ -1,4 +1,5 @@
 import { IBoard } from '@models/board.model';
+import { IUser } from '@models/user.model';
 import { BoardService } from '@services/board.service';
 import { Request, Response, NextFunction } from 'express';
 
@@ -77,8 +78,8 @@ export async function fetchBoardMiddleware(
 	next: NextFunction
 ) {
 	try {
-		console.log(req.user);
-		// const boards = await boardService.find({userID:});
+		const user = req?.user as IUser;
+		req.body.data = await boardService.find({ userID: user._id });
 		next();
 	} catch (error) {
 		console.log('Something went wrong:', error);
