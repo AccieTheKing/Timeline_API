@@ -3,7 +3,10 @@ import { BoardService } from '@services/board.service';
 import { Board } from '@models/board.model';
 import { Milestone } from '@models/milestone.model';
 import { MilestoneService } from '@services/milestone.service';
-import { fetchBoardMiddleware } from '@middlewares/board.middleware';
+import {
+	fetchBoardMiddleware,
+	fetchBoardWithParamId,
+} from '@middlewares/board.middleware';
 import { checkIfAuthenticated } from '@middlewares/auth.middleware';
 
 const boardRouter = Router();
@@ -26,14 +29,17 @@ boardRouter.get(
 	}
 );
 
-boardRouter.get('/:id', async (req, res) => {
-	try {
-		const board = await boardService.find(req.params.id);
-		res.status(200).json(board);
-	} catch (error) {
-		res.status(500).json(`Error: ${error}`);
+boardRouter.get(
+	'/:id',
+	[checkIfAuthenticated, fetchBoardWithParamId],
+	async (req: Request, res: Response) => {
+		try {
+			res.status(200).json(req.body.data);
+		} catch (error) {
+			res.status(500).json(`Error: ${error}`);
+		}
 	}
-});
+);
 
 boardRouter.delete('/:id', async (req, res) => {
 	try {
