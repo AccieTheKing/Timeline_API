@@ -85,3 +85,34 @@ export async function fetchBoardMiddleware(
 		console.log('Something went wrong:', error);
 	}
 }
+
+/**
+ * This middleware function will check if the board that is requested
+ * belongs to the signed in user and if the board exits
+ */
+export async function fetchBoardWithParamId(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	try {
+		const boardID = req?.params?.id as string;
+		const user = req?.user as IUser;
+		const foundBoard = await boardService.findOne({
+			_id: boardID,
+			userID: user._id,
+		});
+
+		if (foundBoard) {
+			req.body.data = foundBoard;
+			next();
+		} else {
+			res.status(403).send({
+				status: 403,
+				message: 'This board can not be accessed by you',
+			});
+		}
+	} catch (error) {
+		console.log('Something went wrong:', error);
+	}
+}
