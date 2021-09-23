@@ -60,9 +60,6 @@ export async function deleteBoardMiddleware(
 ) {
 	try {
 		const boardID: string = req?.body?.id;
-		console.log(`boardID: ${boardID} \n
-        userdata: ${req.user}`);
-
 		// check if user owns the board of the given id
 		await boardService.findByIdAndDelete(boardID);
 		next();
@@ -71,7 +68,7 @@ export async function deleteBoardMiddleware(
 	}
 }
 
-// fetch all boards
+// fetch all boards of the signed in user
 export async function fetchBoardMiddleware(
 	req: Request,
 	res: Response,
