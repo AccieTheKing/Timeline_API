@@ -67,19 +67,7 @@ yarn-error.log*
 .settings/
 *.sublime-workspace
 
-# IDE - VSCode
-<<<<<<< HEAD
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 package-lock.json
-
 yarn.lock
-
 .env
-=======
-
 yarn.lock
->>>>>>> master

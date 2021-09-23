@@ -6,15 +6,45 @@
       "noImplicitAny": true,
       "moduleResolution": "node",
       "sourceMap": true,
+      "allowSyntheticDefaultImports": true,
+      "allowJs": true,
+      "skipLibCheck": true,
+      "strict": false,
+      "forceConsistentCasingInFileNames": true,
+      "noEmit": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true,
       "outDir": "dist",
-      "baseUrl": ".",
+      "baseUrl": "./",
       "paths": {
-          "*": [
-              "node_modules/*"
-          ]
-      }
-  },
-  "include": [
-      "src/**/*"
-  ]
+        "*": [
+            "node_modules/*"
+        ],
+        "@database": [
+            "src/database"
+          ],
+        "@routes/*": [
+            "src/routes/*"
+          ],
+        "@services/*": [
+            "src/services/*"
+          ],
+        "@models/*": [
+            "src/models/*"
+          ],
+        "@helpers/*": [
+            "src/helpers/*"
+          ],
+        "@middlewares/*": [
+            "src/middlewares/*"
+          ],
+      },
+    },
+    "include": [
+      "next-env.d.ts",
+      "**/*.ts",
+      "**/*.tsx"
+    ],
+
+  
 }
