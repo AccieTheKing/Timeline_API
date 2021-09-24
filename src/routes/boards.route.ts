@@ -13,33 +13,36 @@ const boardRouter = Router();
 const boardService: BoardService = new BoardService();
 // const milestoneService: MilestoneService = new MilestoneService();
 
-boardRouter.get(
-	'/',
-	[checkIfAuthenticated, fetchBoardMiddleware],
-	async (req: Request, res: Response) => {
+function boardsHandler(message?: string): Handler {
+	const generalHandler: Handler = async (req: Request, res: Response) => {
 		try {
 			res.status(200).send({
 				status: 200,
-				message: 'Successful fetched boards data',
+				message,
 				data: req.body.data,
 			});
 		} catch (error) {
 			res.status(500).json(`Error: ${error}`);
 		}
-	}
-);
+	};
+	return generalHandler;
+}
 
-boardRouter.get(
-	'/:id',
-	[checkIfAuthenticated, fetchBoardWithParamId],
-	async (req: Request, res: Response) => {
-		try {
-			res.status(200).json(req.body.data);
-		} catch (error) {
+const routes: Route[] = [
+	{
+		method: Method.GET,
+		path: '/',
+		middleware: [checkIfAuthenticated, fetchBoardMiddleware],
+		handler: boardsHandler('Successful fetched boards data'),
+	},
 			res.status(500).json(`Error: ${error}`);
 		}
 	}
 );
+routes.forEach((route) => {
+	const { method, path, middleware, handler } = route;
+	boardRouter[method](path, middleware, handler);
+});
 
 boardRouter.delete('/:id', async (req, res) => {
 	try {
