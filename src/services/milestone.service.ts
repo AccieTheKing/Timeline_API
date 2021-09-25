@@ -2,44 +2,67 @@ import { IMilestone, Milestone } from '@models/milestone.model';
 import { IServiceMethods } from '@services/interface';
 
 export class MilestoneService implements IServiceMethods<IMilestone> {
-	constructor() {}
+	private service;
 
-	findAndDelete(id: string): Promise<void> {
-		throw new Error('Method not implemented.');
+	constructor() {
+		this.service = Milestone;
+	}
+
+	async find(param: any): Promise<IMilestone[]> {
+		try {
+			return this.service.find(param);
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	async findAll(): Promise<IMilestone[]> {
 		try {
-			return await Milestone.find();
+			return this.service.find();
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	}
 
-	async find(id: string): Promise<IMilestone> {
+	async create(element: IMilestone): Promise<IMilestone> {
 		try {
-			return await Milestone.findById(id);
+			const newMilestone = new Milestone(element);
+			const createdMilestone: IMilestone = await newMilestone.save();
+			return createdMilestone;
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	}
 
-	async update(milestone: IMilestone): Promise<IMilestone> {
+	async findById(id: string): Promise<IMilestone> {
 		try {
-			return await Milestone.findByIdAndUpdate(milestone._id, {
-				...milestone,
-			});
+			return this.service.findById(id);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 		}
 	}
 
-	async create(user: IMilestone): Promise<IMilestone> {
+	async findOne(param: any): Promise<IMilestone> {
 		try {
-			const newUser = new User(user);
-			return await newUser.save();
+			return this.service.findOne(param);
 		} catch (error) {
-			console.error(error);
+			console.log(error);
+		}
+	}
+
+	async findByIdAndDelete(id: string): Promise<IMilestone> {
+		try {
+			return this.service.findByIdAndDelete(id);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	async findByIdAndUpdate(id: string, param: any): Promise<IMilestone> {
+		try {
+			return this.service.findByIdAndUpdate(id, param);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 }
