@@ -8,7 +8,12 @@ import { Request, Response, NextFunction } from 'express';
 const boardService: BoardService = new BoardService(); // board service
 const milestoneService: MilestoneService = new MilestoneService(); // milestone serivce
 
-// create board
+/**
+ * CREATE BOARD
+ *
+ * This middleware function checks the signed in user and creates
+ * a board for that user.
+ */
 export async function createBoardMiddleware(
 	req: Request,
 	res: Response,
@@ -31,7 +36,12 @@ export async function createBoardMiddleware(
 	}
 }
 
-// update board
+/**
+ * UPDATE BOARD
+ *
+ * This middleware function checks the signed in user and updates
+ * the values given in the body.
+ */
 export async function updateBoardMiddleware(
 	req: Request,
 	res: Response,
@@ -112,7 +122,11 @@ export async function deleteBoardMiddleware(
 	}
 }
 
-// fetch all boards of the signed in user
+/**
+ * FETCH ALL BOARDS
+ *
+ * This middelware function will fetch all the boards of the signed in user
+ */
 export async function fetchBoardMiddleware(
 	req: Request,
 	res: Response,
