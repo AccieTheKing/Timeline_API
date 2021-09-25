@@ -1,9 +1,12 @@
 import { IBoard } from '@models/board.model';
+import { IMilestone } from '@models/milestone.model';
 import { IUser } from '@models/user.model';
 import { BoardService } from '@services/board.service';
+import { MilestoneService } from '@services/milestone.service';
 import { Request, Response, NextFunction } from 'express';
 
-const boardService = new BoardService(); // board service
+const boardService: BoardService = new BoardService(); // board service
+const milestoneService: MilestoneService = new MilestoneService(); // milestone serivce
 
 // create board
 export async function createBoardMiddleware(
@@ -12,12 +15,16 @@ export async function createBoardMiddleware(
 	next: NextFunction
 ) {
 	try {
-		const details: { userID: string; title: string } = req?.body;
+		const details: { title: string } = req?.body;
+		const user = req?.user as IUser;
+
 		await boardService.create({
-			userID: details.userID,
+			userID: user._id,
 			title: details.title,
 			numberOfMilestones: 0,
 		});
+
+		req.body.data = await boardService.find({ userID: user._id });
 		next();
 	} catch (error) {
 		console.log('Something went wrong:', error);
@@ -31,16 +38,25 @@ export async function updateBoardMiddleware(
 	next: NextFunction
 ) {
 	try {
-		const board = req?.body as IBoard;
-		const updatedBoard = await boardService.findByIdAndUpdate(board._id, {
-			...board,
+		const boardID = req?.params.id as string;
+		const boardData = req?.body as IBoard;
+		const user = req?.user as IUser;
+
+		const foundBoard = await boardService.findOne({
+			_id: boardID,
+			userID: user._id,
 		});
-		if (updatedBoard) {
+
+		if (foundBoard) {
+			await boardService.findByIdAndUpdate(boardID, {
+				...boardData,
+			});
+			req.body.data = await boardService.find({ userID: user._id });
 			next();
 		} else {
 			res.status(404).json({
 				status: 404,
-				message: `Board cound net be updated`,
+				message: `Board could not be updated`,
 			});
 		}
 	} catch (error) {
@@ -52,17 +68,45 @@ export async function updateBoardMiddleware(
 	}
 }
 
-// delete board
+/**
+ * DELETE BOARD
+ *
+ * This middelware function will check if the requested board that
+ * needs to be removed belongs to him/her and remove it.
+ */
 export async function deleteBoardMiddleware(
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) {
 	try {
-		const boardID: string = req?.body?.id;
-		// check if user owns the board of the given id
-		await boardService.findByIdAndDelete(boardID);
-		next();
+		const boardID = req?.params?.id as string;
+		const user = req?.user as IUser;
+
+		const foundBoard = await boardService.findOne({
+			_id: boardID,
+			userID: user._id,
+		});
+
+		if (foundBoard) {
+			await boardService.findByIdAndDelete(foundBoard._id);
+
+			const foundMilestones: IMilestone[] = await milestoneService.find({
+				boardID,
+			});
+
+			if (foundMilestones) {
+				foundMilestones.forEach((milestone) => milestone.remove());
+			}
+
+			req.body.data = await boardService.find({ userID: user._id });
+			next();
+		} else {
+			res.status(403).send({
+				status: 403,
+				message: 'This board can not be accessed by you',
+			});
+		}
 	} catch (error) {
 		console.log('Something went wrong:', error);
 	}
