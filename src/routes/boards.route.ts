@@ -1,17 +1,15 @@
 import { Request, Response, Router } from 'express';
-import { BoardService } from '@services/board.service';
-import { Board } from '@models/board.model';
-import { Milestone } from '@models/milestone.model';
-import { MilestoneService } from '@services/milestone.service';
 import {
+	createBoardMiddleware,
+	deleteBoardMiddleware,
 	fetchBoardMiddleware,
 	fetchBoardWithParamId,
+	updateBoardMiddleware,
 } from '@middlewares/board.middleware';
 import { checkIfAuthenticated } from '@middlewares/auth.middleware';
+import { Route, Handler, Method } from '@routes/types';
 
 const boardRouter = Router();
-const boardService: BoardService = new BoardService();
-// const milestoneService: MilestoneService = new MilestoneService();
 
 function boardsHandler(message?: string): Handler {
 	const generalHandler: Handler = async (req: Request, res: Response) => {
@@ -35,52 +33,50 @@ const routes: Route[] = [
 		middleware: [checkIfAuthenticated, fetchBoardMiddleware],
 		handler: boardsHandler('Successful fetched boards data'),
 	},
-			res.status(500).json(`Error: ${error}`);
-		}
-	}
-);
+	{
+		method: Method.GET,
+		path: '/:id',
+		middleware: [checkIfAuthenticated, fetchBoardWithParamId],
+		handler: boardsHandler('Successful fetched board'),
+	},
+	{
+		method: Method.POST,
+		path: '/',
+		middleware: [checkIfAuthenticated, createBoardMiddleware],
+		handler: boardsHandler('Successful created board'),
+	},
+	{
+		method: Method.PUT,
+		path: '/:id',
+		middleware: [checkIfAuthenticated, updateBoardMiddleware],
+		handler: boardsHandler('Successful updated board '),
+	},
+	{
+		method: Method.DELETE,
+		path: '/:id',
+		middleware: [checkIfAuthenticated, deleteBoardMiddleware],
+		handler: boardsHandler(
+			'Successful deleted board and containing stories'
+		),
+	},
+];
+
 routes.forEach((route) => {
 	const { method, path, middleware, handler } = route;
 	boardRouter[method](path, middleware, handler);
 });
 
-boardRouter.delete('/:id', async (req, res) => {
-	try {
-		await boardService.findAndDelete(req.params.id);
-		const foundMilestones = await Milestone.find({
-			boardID: req.params.id,
-		});
-		foundMilestones.forEach((milestone) => milestone.remove());
-		const allBoards = await boardService.findAll();
-		res.status(200).json(allBoards);
-	} catch (error) {
-		res.status(500).json(`Error: ${error}`);
-	}
-});
-
-boardRouter.post('/new', async (req, res) => {
-	try {
-		const title = req.body.title;
-		const userID = req.body.userID;
-		const newBoard = new Board({
-			title,
-			numberOfStories: 0,
-			userID,
-		});
-
-		await newBoard.save();
-		const allUserBoards = await Board.find({ userID });
-		res.status(200).json(allUserBoards);
-	} catch (error) {
-		res.status(500).json(`Error: ${error}`);
-	}
-});
-
-boardRouter.post('/update/:id', async (req, res) => {
-	const board = await Board.findById(req.params.id);
-	board.title = req.body.title;
-	board.save();
-	res.json(`Board ${req.params.id} updated!`);
-});
+// @NOTE: Example of how it is been used
+// boardRouter.get(
+// 	'/:id',
+// 	[checkIfAuthenticated, fetchBoardWithParamId],
+// 	async (req: Request, res: Response) => {
+// 		try {
+// 			res.status(200).json(req.body.data);
+// 		} catch (error) {
+// 			res.status(500).json(`Error: ${error}`);
+// 		}
+// 	}
+// );
 
 export { boardRouter };
