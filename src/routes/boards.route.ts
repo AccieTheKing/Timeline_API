@@ -61,22 +61,16 @@ const routes: Route[] = [
 	},
 ];
 
+/**
+ * This transforms the routes in the array to express functions
+ * for routing:
+ *
+ * boardRouter.get('path',middleware,  handler)
+ * boardRouter[method](path, middleware, handler)
+ */
 routes.forEach((route) => {
 	const { method, path, middleware, handler } = route;
 	boardRouter[method](path, middleware, handler);
 });
-
-// @NOTE: Example of how it is been used
-// boardRouter.get(
-// 	'/:id',
-// 	[checkIfAuthenticated, fetchBoardWithParamId],
-// 	async (req: Request, res: Response) => {
-// 		try {
-// 			res.status(200).json(req.body.data);
-// 		} catch (error) {
-// 			res.status(500).json(`Error: ${error}`);
-// 		}
-// 	}
-// );
 
 export { boardRouter };
