@@ -1,8 +1,70 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { Board } from '@models/board.model';
 import { Milestone } from '@models/milestone.model';
+import { Handler, Method, Route } from './types';
 
 const milestoneRouter = Router();
+
+function milestoneHandler(message?: string): Handler {
+	const generalHandler: Handler = async (req: Request, res: Response) => {
+		try {
+			res.status(200).send({
+				status: 200,
+				message,
+				data: req.body.data,
+			});
+		} catch (error) {
+			res.status(500).json(`Error: ${error}`);
+		}
+	};
+	return generalHandler;
+}
+
+const routes: Route[] = [
+	{
+		path: '/',
+		method: Method.GET,
+		middleware: [],
+		handler: milestoneHandler(`Succesfully fetched milestones`),
+	},
+	{
+		path: '/:boardID',
+		method: Method.GET,
+		middleware: [],
+		handler: milestoneHandler(`Succesfully fetched milestones`),
+	},
+	{
+		path: '/',
+		method: Method.POST,
+		middleware: [],
+		handler: milestoneHandler(`Succesfully created milestone`),
+	},
+	{
+		path: '/:id',
+		method: Method.PATCH,
+		middleware: [],
+		handler: milestoneHandler(`Succesfully updated milestone`),
+	},
+	{
+		path: '/:id',
+		method: Method.DELETE,
+		middleware: [],
+		handler: milestoneHandler(`Succesfully deleted milestone`),
+	},
+];
+
+/**
+ * This transforms the routes in the array to express functions
+ * for routing:
+ *
+ * milestoneRouter.get('path',middleware,  handler)
+ * milestoneRouter[method](path, middleware, handler)
+ */
+routes.forEach((route: Route) => {
+	const { path, method, middleware, handler } = route;
+	milestoneRouter[method](path, middleware, handler);
+});
+
 milestoneRouter.get('/', async (req, res) => {
 	try {
 		const story = await Milestone.find();
