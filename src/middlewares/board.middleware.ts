@@ -1,5 +1,5 @@
 import { IBoard } from '@models/board.model';
-import { IMilestone } from '@models/milestone.model';
+import { IMilestone, Milestone } from '@models/milestone.model';
 import { IUser } from '@models/user.model';
 import { BoardService } from '@services/board.service';
 import { MilestoneService } from '@services/milestone.service';
@@ -106,7 +106,10 @@ export async function deleteBoardMiddleware(
 			});
 
 			if (foundMilestones) {
-				foundMilestones.forEach((milestone) => milestone.remove());
+				foundMilestones.forEach((milestone: IMilestone) =>
+					//@ts-ignore
+					milestone.remove()
+				);
 			}
 
 			req.body.data = await boardService.find({ userID: user._id });
