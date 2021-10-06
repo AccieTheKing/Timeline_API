@@ -15,6 +15,10 @@ export class UserService implements IServiceMethods<IUser> {
 		this.service = User;
 	}
 
+	async find(param: any): Promise<IUser[]> {
+		throw new Error('Method not implemented.');
+	}
+
 	async findAll(): Promise<IUser[]> {
 		try {
 			return await this.service.find();
@@ -41,7 +45,7 @@ export class UserService implements IServiceMethods<IUser> {
 
 	async findByIdAndUpdate(id: string, param: any): Promise<IUser> {
 		try {
-			return await this.service.findByIdAndUpdate(id, { ...param });
+			return await this.service.findByIdAndUpdate(id, param);
 		} catch (error) {
 			console.error(error);
 		}
