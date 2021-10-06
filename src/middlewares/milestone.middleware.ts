@@ -35,10 +35,14 @@ export async function createMilestoneMiddleware(
 			actualSituation: req.body.comment.actual,
 			desiredSituation: req.body.comment.desired,
 			boardID: req.body.boardID,
+			userID: user._id,
 		});
 
 		if (newMilestone) {
-			req.body.data = await milestoneService.find({ userID: user._id });
+			req.body.data = await milestoneService.find({
+				userID: user._id,
+				boardID: req.body.boardID,
+			});
 			next();
 		} else {
 			milestoneHandler(404, 'Story could not be found');
