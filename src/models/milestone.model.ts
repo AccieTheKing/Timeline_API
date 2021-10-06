@@ -1,7 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 
-export interface IMilestone extends Document {
-	_id: string;
+export interface IMilestone {
+	_id?: string;
 	boardID: string;
 	title: string;
 	startDate: Date;
