@@ -10,6 +10,7 @@ import { connectToDB } from '@database';
 import { authRouter } from '@routes/authentication.route';
 import { boardRouter } from '@routes/boards.route';
 import { onInitPassport } from '@helpers/passport.helper';
+import { milestoneRouter } from '@routes/milestones.route';
 
 const port: number = parseInt(process.env.PORT) || 5000;
 const app = express();
@@ -42,7 +43,7 @@ onInitPassport(); // initialize all passport stategies
 // App routes
 app.use('/auth', authRouter);
 app.use('/boards', boardRouter);
+app.use('/milestone', milestoneRouter);
 // app.use('/users', usersRouter);
-// app.use('/stories', storiesRouter);
 
 app.listen(port, () => console.log(`App listens to port ${port}`));

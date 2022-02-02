@@ -1,11 +1,14 @@
 import { IBoard, Board } from '@models/board.model';
+import { User, IUser } from '@models/user.model';
 import { IServiceMethods } from '@services/interface';
 
 export class BoardService implements IServiceMethods<IBoard> {
 	private service;
+	private userService;
 
 	constructor() {
 		this.service = Board;
+		this.userService = User;
 	}
 
 	async find(param: any): Promise<IBoard[]> {
@@ -28,6 +31,13 @@ export class BoardService implements IServiceMethods<IBoard> {
 		try {
 			const newBoard = new Board(element);
 			const createdBoard: IBoard = await newBoard.save();
+
+			let userData: IUser = await this.userService.findOne({
+				_id: createdBoard.userID,
+			});
+			userData.numberOfBoards += 1;
+			//@ts-ignore
+			userData.save();
 			return createdBoard;
 		} catch (error) {
 			console.log(error);
@@ -52,6 +62,13 @@ export class BoardService implements IServiceMethods<IBoard> {
 
 	async findByIdAndDelete(id: string): Promise<IBoard> {
 		try {
+			const foundBoard = await this.service.findOne({ _id: id });
+			let userData: IUser = await this.userService.findOne({
+				_id: foundBoard.userID,
+			});
+			userData.numberOfBoards -= 1;
+			//@ts-ignore
+			userData.save();
 			return this.service.findByIdAndDelete(id);
 		} catch (error) {
 			console.log(error);

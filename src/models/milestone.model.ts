@@ -1,8 +1,9 @@
 import { Schema, model, Document } from 'mongoose';
 
-export interface IMilestone extends Document {
-	_id: string;
+export interface IMilestone {
+	_id?: string;
 	boardID: string;
+	userID: string;
 	title: string;
 	startDate: Date;
 	endDate: Date;
@@ -12,6 +13,7 @@ export interface IMilestone extends Document {
 
 const schema = new Schema<IMilestone>({
 	boardID: { type: String, required: true },
+	userID: { type: String, required: true },
 	title: { type: String, required: true },
 	startDate: { type: Date, required: true },
 	endDate: { type: Date, required: false },
